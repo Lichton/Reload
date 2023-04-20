@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using FullInspector;
 using UnityEngine;
 
@@ -10,7 +10,10 @@ namespace Reload
 		public override void Start()
 		{
 			base.Start();
-		}
+            ETGModConsole.Log("Bulletbishop started");
+            
+            bishopCurrentState = bishopStates.BISHOP_START;
+        }
 
 
 		public override void Upkeep()
@@ -26,7 +29,7 @@ namespace Reload
             {
                 cooldown++;
             }
-            else if(!IsPlayingAttackAnimation(m_aiAnimator) && !IsPlayingTeleportAnimation(m_aiAnimator) && CooldownComplete(m_aiActor))
+            else if((!IsPlayingAttackAnimation(m_aiAnimator) && !IsPlayingTeleportAnimation(m_aiAnimator) && CooldownComplete(m_aiActor)) || bishopCurrentState == bishopStates.BISHOP_START)
             {
                 DoAnimConditional(m_aiAnimator);
             }
@@ -146,20 +149,21 @@ namespace Reload
                     if(UnityEngine.GameObject.Find("bulletpopecarpettop") != null)
                     {
                         var Carpet = UnityEngine.GameObject.Find("bulletpopecarpettop");
-
+                        m_aiActor.SimpleMoveToPosition(Carpet.transform.position);
 
 
 
 
                         UnityEngine.Object.Instantiate<GameObject>(EasyVFXDatabase.IncensePoof, m_aiActor.sprite.WorldBottomCenter, Quaternion.identity);
                         m_aiActor.aiAnimator.PlayClip("idlefront", 0f);
+
                     }
                     break;
                 case 2:
                     if (UnityEngine.GameObject.Find("bulletpopecarpetleft") != null)
                     {
                         var Carpet = UnityEngine.GameObject.Find("bulletpopecarpetleft");
-
+                        m_aiActor.SimpleMoveToPosition(Carpet.transform.position);
 
 
 
@@ -173,7 +177,7 @@ namespace Reload
                     if (UnityEngine.GameObject.Find("bulletpopecarpetright") != null)
                     {
                         var Carpet = UnityEngine.GameObject.Find("bulletpopecarpetright");
-
+                        m_aiActor.SimpleMoveToPosition(Carpet.transform.position);
 
 
 
@@ -185,7 +189,7 @@ namespace Reload
                     if (UnityEngine.GameObject.Find("bulletpopecarpetback") != null)
                     {
                         var Carpet = UnityEngine.GameObject.Find("bulletpopecarpetback");
-                        
+                        m_aiActor.SimpleMoveToPosition(Carpet.transform.position);
 
 
 
@@ -211,7 +215,8 @@ namespace Reload
             BISHOP_DOATTACK,
             BISHOP_DOTELEPORT,
 			BISHOP_DIDTELEPORT,
-			BISHOP_DIDATTACK
+			BISHOP_DIDATTACK,
+            BISHOP_START,
         }
 	}
-}
+}*/

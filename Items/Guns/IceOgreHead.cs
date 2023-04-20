@@ -52,10 +52,12 @@ namespace Reload
             gun.DefaultModule.ammoCost = 1;
             gun.DefaultModule.shootStyle = ProjectileModule.ShootStyle.Automatic;
             gun.DefaultModule.sequenceStyle = ProjectileModule.ProjectileSequenceStyle.Ordered;
+            gun.gunHandedness = GunHandedness.HiddenOneHanded;
+            gun.carryPixelOffset = new IntVector2(1, 0);
             gun.reloadTime = 0.2f;
             gun.CanReloadNoMatterAmmo = false;
             gun.muzzleFlashEffects = null;
-            gun.SetBaseMaxAmmo(700);
+            gun.SetBaseMaxAmmo(450);
             gun.gunClass = GunClass.ICE;
             
             gun.GetComponent<tk2dSpriteAnimator>().GetClipByName(gun.shootAnimation).wrapMode = tk2dSpriteAnimationClip.WrapMode.LoopSection;
@@ -64,7 +66,6 @@ namespace Reload
             gun.quality = PickupObject.ItemQuality.B;
             
             gun.barrelOffset.transform.localPosition = new Vector3(0.6f, 0.3f, 0f);
-            gun.encounterTrackable.EncounterGuid = "iceogre";
             //This block of code helps clone our projectile. Basically it makes it so things like Shadow Clone and Hip Holster keep the stats/sprite of your custom gun's projectiles.
             //projectile.baseData allows you to modify the base properties of your projectile module.
             //In our case, our gun uses modified projectiles from the ak-47.
@@ -83,7 +84,7 @@ namespace Reload
                 projectile.gameObject.SetActive(false);
                 FakePrefab.MarkAsFakePrefab(projectile.gameObject);
                 UnityEngine.Object.DontDestroyOnLoad(projectile);
-                projectile.baseData.damage = 0.2f;
+                projectile.baseData.damage = 0.8f;
                 projectile.baseData.speed *= 0.5f;
                 projectile.shouldRotate = true;
                 projectile.transform.parent = gun.barrelOffset;
@@ -99,9 +100,10 @@ namespace Reload
                 trail.EndColor = ExtendedColours.freezeBlue;
                 projectile.freezeEffect = StaticStatusEffects.frostBulletsEffect;
                 if (mod != gun.DefaultModule) { mod.ammoCost = 0; }
+                
             }
-            
-            
+
+            IceID = gun.PickupObjectId;
             gun.DefaultModule.ammoType = GameUIAmmoType.AmmoType.CUSTOM;
             gun.DefaultModule.customAmmoType = CustomClipAmmoTypeToolbox.AddCustomAmmoType("Icey Ammo", "Reload/Resources/Guns/Ammo/ice_full", "Reload/Resources/Guns/Ammo/ice_empty");
             //This determines what sprite you want your projectile to use. Note this isn't necessary if you don't want to have a custom projectile sprite.
@@ -109,6 +111,7 @@ namespace Reload
             ETGMod.Databases.Items.Add(gun, null, "ANY");
 
         }
+        public static int IceID;
         public override void PostProcessProjectile(Projectile projectile)
         {
             base.PostProcessProjectile(projectile);

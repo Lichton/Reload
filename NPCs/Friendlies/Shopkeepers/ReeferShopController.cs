@@ -10,8 +10,8 @@ using Alexandria.Misc;
 
 namespace Reload
 {
-    class ReeferShopController : CustomShopController
-    {
+	public class ReeferShopController : CustomShopController
+	{
 		public override void DoSetup()
 		{
 			base.m_shopItems = new List<GameObject>();
@@ -126,7 +126,7 @@ namespace Reload
 							gameObject5 = this.shopItems.SelectByWeightNoExclusions(GameManager.Instance.IsSeeded);
 							this.m_shopItems.Add(gameObject5);
 							break;
-						
+
 						default:
 							gameObject5 = this.shopItems.SubshopSelectByWeightWithoutDuplicatesFullPrereqs(this.m_shopItems, weightModifier, 1, GameManager.Instance.IsSeeded);
 							this.m_shopItems.Add(gameObject5);
@@ -197,8 +197,8 @@ namespace Reload
 							component6.HologramIconSpriteName = component7.journalData.AmmonomiconSprite;
 							shopItemController.CurrencyType = currencyType;
 							shopItemController.OverridePrice = (int?)(20 * GameManager.Instance.PrimaryPlayer.stats.GetStatValue(PlayerStats.StatType.GlobalPriceMultiplier).RoundToNearest(1));
-							if(GameManager.Instance.SecondaryPlayer)
-                            {
+							if (GameManager.Instance.SecondaryPlayer)
+							{
 								shopItemController.OverridePrice *= (int?)(GameManager.Instance.PrimaryPlayer.stats.GetStatValue(PlayerStats.StatType.GlobalPriceMultiplier).RoundToNearest(1));
 
 							}
@@ -324,6 +324,7 @@ namespace Reload
 					}
 				}
 			}
+		}
 
 		/*for (int num6 = 0; num6 < m_customShopItemControllers.Count; num6++)
 		{
@@ -334,8 +335,6 @@ namespace Reload
 			m_customShopItemControllers[num6].RemoveCurrency += Balls.RemoveCurrency;
 			m_customShopItemControllers[num6].customPriceSprite = this.customPriceSprite;
 		}*/
-	}
-
-	
+		public GameObject shopNpc;
 	}
 }

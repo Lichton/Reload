@@ -19,7 +19,7 @@ namespace Reload
 		// Token: 0x06000AFB RID: 2811 RVA: 0x00066254 File Offset: 0x00064454
 		public void Start()
 		{
-			shop = base.transform.parent.GetComponent<CustomShopController>();
+			shop = base.transform.parent.GetComponent<ReeferShopController>();
 			base.gameObject.transform.SetParent(shop.transform);
 			base.gameObject.transform.localPosition = new Vector2(2.2f, -0.5f);
 
@@ -49,7 +49,7 @@ namespace Reload
 			else if (interactor.carriedConsumables.Currency < price || shop == null)
 			{
 				AkSoundEngine.PostEvent("Play_OBJ_purchase_unable_01", base.gameObject);
-				FailedRestock();
+				FailedRestockPrice();
 				return;
 			}
 			if (interactor.carriedConsumables.Currency >= price && shop.m_itemControllers != null && shop.m_itemControllers.Count > 0)
@@ -131,7 +131,7 @@ namespace Reload
                 else
                 {
 					AkSoundEngine.PostEvent("Play_OBJ_purchase_unable_01", base.gameObject);
-					FailedRestock();
+					FailedRestockNone();
 					return;
 				}
 				if (itemList != null)
@@ -175,13 +175,22 @@ namespace Reload
 
 		int i = 1;
 
-        public void FailedRestock()
+        public void FailedRestockPrice()
         {
 			if (shop != null)
 			{
-			shop.shopkeepFSM.SendEvent("failedPurchase");
+			
 			}
 		}
+
+		public void FailedRestockNone()
+		{
+			if (shop != null)
+			{
+				TextBoxManager.ShowTextBox(shop.shopNpc.transform.position + new Vector3(0f, 2.5f), shop.shopNpc.transform, 5f, StringTableManager.GetString("#REEFER_RESTOCKDENY_TALK"), "shopkeep", false, TextBoxManager.BoxSlideOrientation.NO_ADJUSTMENT, false, false);
+			}
+		}
+
 		public float GetDistanceToPoint(Vector2 point)
 		{
 			return Vector2.Distance(base.specRigidbody.UnitBottomCenter, point);
@@ -215,7 +224,7 @@ namespace Reload
 
 		}
 
-		public CustomShopController shop;
+		public ReeferShopController shop;
 		public void OnExitRange(PlayerController interactor)
 		{
 			if (!this)

@@ -33,7 +33,7 @@ namespace Reload
             ItemBuilder.SetupItem(item, shortDesc, longDesc, "rld");
 
             item.quality = PickupObject.ItemQuality.B;
-            item.PlaceItemInAmmonomiconAfterItemById(159);
+            item.PlaceItemInAmmonomiconAfterItemById(167);
         }
 
         public override void Pickup(PlayerController player)

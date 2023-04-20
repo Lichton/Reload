@@ -8,6 +8,8 @@ using System.Reflection;
 using Alexandria.NPCAPI;
 using Alexandria.DungeonAPI;
 using Alexandria.Misc;
+using SaveAPI;
+using Dungeonator;
 
 namespace Reload
 {
@@ -51,7 +53,7 @@ namespace Reload
             reeferDrugs.AddItemToPool(ReloadSyringe.ReloadUpID);
             reeferDrugs.AddItemToPool(SpeedSyringe.SpeedID);
             AddComplex(ETGMod.Databases.Strings.Core, "#REEFER_GENERIC_TALK", "My stuff's top shelf, kid. Promise.");
-            AddComplex(ETGMod.Databases.Strings.Core, "#REEFER_GENERIC_TALK", "Kyle, pass me the- oh, it's you.");
+            AddComplex(ETGMod.Databases.Strings.Core, "#REEFER_GENERIC_TALK", "Kyle, pass me the- oh, it's you."); //ketamine
             AddComplex(ETGMod.Databases.Strings.Core, "#REEFER_GENERIC_TALK", "Heh, who told you my stuff has side effects? The nerve of some people.");
             AddComplex(ETGMod.Databases.Strings.Core, "#REEFER_GENERIC_TALK", "Blah blah blah... Wait, did I say that out loud?");
 
@@ -89,6 +91,9 @@ namespace Reload
             AddComplex(ETGMod.Databases.Strings.Core, "#REEFER_STOLEN_TALK", "Huh? Whuzzat?");
             AddComplex(ETGMod.Databases.Strings.Core, "#REEFER_STOLEN_TALK", "Must've been a hallucination.");
 
+            AddComplex(ETGMod.Databases.Strings.Core, "#REEFER_RESTOCKDENY_TALK", "Can't restock when I've got nothing, kid.");
+            AddComplex(ETGMod.Databases.Strings.Core, "#REEFER_RESTOCKDENY_TALK", "Heh, I ain't got the stock to sell more.");
+            //Bro legit I gotta fix this BS and make the Restock machine create better new string for it specifically - i did that goofball
             Reload.ReloadModule.reeferShop = ReeferShopGenerator.SetUpShop(
                           "reefer",
                           "rld",
@@ -105,6 +110,7 @@ namespace Reload
                           "#REEFER_INTRO",
                           "#REEFER_ATTACKED_TALK",
                           "#REEFER_STOLEN_TALK",
+                          "#REEFER_RESTOCKDENY_TALK",
                            new Vector3(0f, 2.5f, 0),
                           new Vector3(1.9375f, 3.4375f, 5.9375f),
                           ShopAPI.VoiceBoxes.MANLY,
@@ -115,7 +121,7 @@ namespace Reload
                           null,
                           null,
                           null,
-                          null,
+                          UnlockManager,
                           null,
                           null,
                           null,
@@ -131,15 +137,22 @@ namespace Reload
                           2,
                           CustomShopController.ShopItemPoolType.DEFAULT,
                           true
-                          //Minor visual bug when added to shop pools, find way to make carpet load on a lower level
+                          
 
                           ).GetComponent<CustomShopController>();
-
+            
             PrototypeDungeonRoom Mod_Shop_Room = RoomFactory.BuildFromResource("Reload/Resources/Rooms/Contraband.room").room;
             Alexandria.NPCAPI.ShopAPI.RegisterShopRoom(Reload.ReloadModule.reeferShop.gameObject, Mod_Shop_Room, new UnityEngine.Vector2(7.5f, 7f));
+            //DungeonToolbox.RegisterShopRoomWeighted(Reload.ReloadModule.reeferShop.gameObject, Mod_Shop_Room, new UnityEngine.Vector2(7.5f, 7f), 1000f);
+
         }
 
-
+        private static bool UnlockManager(PlayerController arg1, PickupObject arg2, int arg3)
+        {
+            if (!SaveAPIManager.GetFlag(CustomDungeonFlags.REEFER_PURCHASE)) SaveAPIManager.SetFlag(CustomDungeonFlags.REEFER_PURCHASE, true);
+            return false;
+        }
+       
 
     public static Vector3[] shopPos6 = new Vector3[]
         {

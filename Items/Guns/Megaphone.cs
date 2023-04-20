@@ -4,6 +4,8 @@ using Gungeon;
 using MonoMod;
 using UnityEngine;
 using Alexandria.ItemAPI;
+using Dungeonator;
+using System.Collections.Generic;
 
 namespace Reload
 {
@@ -27,7 +29,7 @@ namespace Reload
             //These two lines determines the description of your gun, ".SetShortDescription" being the description that appears when you pick up the gun and ".SetLongDescription" being the description in the Ammonomicon entry. 
             gun.SetShortDescription("Shoot Your Voice");
             gun.SetLongDescription("A megaphone that has been modified to produce ear-piercing sound blasts, aside from the normal voice-amplification. \n\n" +
-            "Shoots invisible blasts that have a chance to stun enemies hit by them. When reloaded, causes a blast of sound that stuns enemies hit. \n\n" +
+            "Shoots invisible blasts that expand into a soundwave that stuns enemies.\n\n" +
             "'WHAT'S THAT? I CAN'T HEAR YOU THROUGH MY EARPLUGS!' - Parselo, known widely as the Decibel Killer, a serial killer famous for stealing Gundead Military technology to blare his speeches at lethal volume.");
             // This is required, unless you want to use the sprites of the base gun.
             // That, by default, is the pea shooter.
@@ -50,11 +52,10 @@ namespace Reload
             gun.DefaultModule.cooldownTime = 0.5f;
             gun.DefaultModule.numberOfShotsInClip = 5;
             gun.muzzleFlashEffects = null;
-            gun.SetBaseMaxAmmo(250);
+            gun.SetBaseMaxAmmo(100);
             // Here we just set the quality of the gun and the "EncounterGuid", which is used by Gungeon to identify the gun.
             gun.quality = PickupObject.ItemQuality.A;
             gun.barrelOffset.transform.localPosition = new Vector3(1f, 0.5f, 0f);
-            gun.encounterTrackable.EncounterGuid = "megaphoney";
             //This block of code helps clone our projectile. Basically it makes it so things like Shadow Clone and Hip Holster keep the stats/sprite of your custom gun's projectiles.
             Projectile projectile = UnityEngine.Object.Instantiate<Projectile>(gun.DefaultModule.projectiles[0]);
             projectile.gameObject.SetActive(false);
@@ -67,6 +68,7 @@ namespace Reload
             projectile.baseData.damage = 8f;
             projectile.baseData.speed *= 2f;
             projectile.transform.parent = gun.barrelOffset;
+            
             projectile.StunApplyChance = 0.2f;
             gun.DefaultModule.ammoType = GameUIAmmoType.AmmoType.CUSTOM;
             gun.DefaultModule.customAmmoType = CustomClipAmmoTypeToolbox.AddCustomAmmoType("Microphone Ammo", "Reload/Resources/Guns/Ammo/megaphone_full", "Reload/Resources/Guns/Ammo/megaphone_empty");
@@ -82,33 +84,95 @@ namespace Reload
         public override void OnReloadPressed(PlayerController player, Gun gun, bool bSOMETHING)
         {
             base.OnReloadPressed(player, gun, bSOMETHING);
-            if (gun.ClipShotsRemaining == 0)
+            if (gun.ClipShotsRemaining < gun.ClipCapacity && !gun.IsReloading)
             {
-                this.Stunwave(player, gun);
                 AkSoundEngine.PostEvent("Play_WPN_screechgun_reload_01", base.gameObject);
+
             }
-            else if(gun.ClipShotsRemaining < gun.ClipCapacity)
+            if (player.PlayerHasActiveSynergy("Phoney") && gun.ClipShotsRemaining <= 0 && !gun.IsReloading)
             {
-                AkSoundEngine.PostEvent("Play_WPN_zapper_reload_01", base.gameObject);
-            }             
+                StunwavePlayer(player);
+            }
+
         }
 
-        private void Stunwave(PlayerController player, Gun gun)
+        private void StunwavePlayer(PlayerController player)
         {
-            Exploder.DoDistortionWave(player.CenterPosition, 0.2f, 0.04f, 10f, 1f);
-            if (player.GetAbsoluteParentRoom().HasActiveEnemies(Dungeonator.RoomHandler.ActiveEnemyType.All))
+            if (player && player.specRigidbody)
             {
-                
-                foreach (AIActor enemy in player.GetAbsoluteParentRoom().GetActiveEnemies(Dungeonator.RoomHandler.ActiveEnemyType.All))
+                Timers.Add(1.5f - BraveTime.DeltaTime);
+                preVWaveDists.Add(0f);
+                Vector2 center = player.specRigidbody.UnitCenter;
+                Exploder.DoDistortionWave(center, 0.5f, 0.04f, 5f, 1.5f);
+                centers.Add(center);
+            }
+        }
+
+        public override void PostProcessProjectile(Projectile projectile)
+        {
+
+            projectile.OnDestruction += this.Stunwave;
+        }
+
+        private void Stunwave(Projectile obj)
+        {
+            if (obj && obj.specRigidbody)
+            {
+                Timers.Add(1.5f - BraveTime.DeltaTime);
+                preVWaveDists.Add(0f);
+                Vector2 center = obj.specRigidbody.UnitCenter;
+                Exploder.DoDistortionWave(center, 0.5f, 0.04f, 5f, 1.5f);
+                centers.Add(center);
+            }
+        }
+
+        protected override void Update()
+        {
+            if (gun.CurrentOwner && gun.GunPlayerOwner())
+            {
+                List<AIActor> activeEnemies = gun.GunPlayerOwner().CurrentRoom.GetActiveEnemies(RoomHandler.ActiveEnemyType.All);
+
+                if (activeEnemies != null)
                 {
-                    if (enemy != null && enemy.behaviorSpeculator != null)
+                    for (int i = 0; i < activeEnemies.Count; i++)
                     {
-                        enemy.behaviorSpeculator.Stun(3f);
+                        AIActor aiactor = activeEnemies[i];
+                        for (int o = 0; o < Timers.Count; o++)
+                        {
+                            if (Timers[o] >= 0)
+                            {
+                                Timers[o] -= BraveTime.DeltaTime;
+
+                                num = BraveMathCollege.LinearToSmoothStepInterpolate(0f, 5f, 1f - Timers[o] / 1.5f);
+                                Vector2 unitCenter = aiactor.specRigidbody.GetUnitCenter(ColliderType.HitBox);
+
+                                float num2 = Vector2.Distance(unitCenter, centers[o]);
+                                if (num2 >= preVWaveDists[o] - 0.25f && num2 <= num + 0.25f)
+                                {
+                                    aiactor.behaviorSpeculator.Stun(2f);
+                                }
+                            }
+                            else
+                            {
+                                Timers.Remove(Timers[o]);
+                                centers.Remove(centers[o]);
+                                preVWaveDists.Remove(preVWaveDists[o]);
+                            }
+                        }
                     }
+                    for (int i = 0; i < preVWaveDists.Count; i++)
+                    {
+                        preVWaveDists[i] = num;
+                    }
+
                 }
             }
         }
-    }
+
+        public List<float> Timers;
+        public List<Vector2> centers;
+        public List<float> preVWaveDists;
+        public float num;
         //Now add the Tools class to your project.
         //All that's left now is sprite stuff. 
         //Your sprites should be organized, like how you see in the mod folder. 
@@ -117,4 +181,5 @@ namespace Reload
         //By default this gun is a one-handed weapon
         //If you need a basic two handed .json. Just use the jpxfrd2.json.
         //And finally, don't forget to add your Gun to your ETGModule class!
+    }
 }

@@ -44,14 +44,18 @@ namespace Reload
             ETGModMainBehaviour.WaitForGameManagerStart(GMStart);
         }
 
+    
+
         public void GMStart(GameManager g)
-        {     
+        {
+            instance = this;
             Log($"{NAME} has activated, be aware.", TEXT_COLOR);
             FilePath = this.FolderPath() + "/rooms";
             //Sounds
 
             //Tools and Toolboxes
             Customhelpers.InitHooks();
+            Prefabs.InitCustomPrefabs();
             ItemAPI.EnemyBuilder.Init();
             ItemAPI.BossBuilder.Init();
 
@@ -60,9 +64,11 @@ namespace Reload
             SaveAPIManager.Setup("rld");
             EasyVFXDatabase.Init();
             VFXToolbox.InitVFX();
+            AudioResourceLoader.InitAudio();
             //Status Effects
             PartyStatusEffectSetup.Init();
-
+            //Companions
+            Manny.Init();
             //Passives
             MiniMap.Init();
             AssaultBullets.Init();
@@ -70,6 +76,8 @@ namespace Reload
             Rainbowllets.Init();
             PartyBullets.Init();
             GreyJumpsuit.Init();
+            ConsolationPrize.Init();
+            CrownOfHubris.Init();
             //Syringes
             AccuracySyringe.Init();
             BulletVelocitySyringe.Init();
@@ -81,29 +89,40 @@ namespace Reload
             RangeSyringe.Init();
             ReloadSyringe.Init();
             SpeedSyringe.Init();
+
+            SyringeBelt.Init();
+
             //Actives
             //MunitionsMixer.Init();
             //HealthChargedItem.Init();
             DungeonCore.Init();
+            WinchesterBrick.Init();
+            StackOverflow.Init();
+            TaxidermyKit.Init();
+            WheelOfCommerce.Init();
             //Guns
             Megaphone.Add();
             IceOgreHead.Add();
 
             //Synergy
-            //SynergyList.MakeSynergies();
-
+            SynergyList.MakeSynergies();
+           // SynergyList.MakeGunsCooler();
             //NPCs
             Reefer.Init();
             //KnightKin.Init();
 
            
 
-            //BulletBishop.Init();
-           //BulletBishopCarpetTop.Add();
-            //BulletBishopCarpetLeft.Add();
-           //BulletBishopCarpetRight.Add();
-           //BulletBishopCarpetBack.Add();
-            //FlowInjectionInitialiser.InitializeFlows();
+            BulletBishop.Init();
+            FlowInjectionInitialiser.InitializeFlows();
+
+            //ETGMod.StartGlobalCoroutine(CrossModStuff());
+        }
+
+        private IEnumerator CrossModStuff()
+        {
+            yield return null;
+            //SynergyList.MakeCrossModSynergies();
         }
 
         public static void Log(string text, string color="FFFFFF")

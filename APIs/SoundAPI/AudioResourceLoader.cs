@@ -11,7 +11,7 @@ namespace Reload
 	public class AudioResourceLoader
 	{
 
-		public static void InitAudio() { AutoloadFromAssembly(Assembly.GetExecutingAssembly(), "Reload"); }
+		public static void InitAudio() { AutoloadFromAssembly(Assembly.GetExecutingAssembly(), "Resource"); }
 
 		public static void AutoloadFromAssembly(Assembly assembly, string prefix)
 		{

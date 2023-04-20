@@ -40,6 +40,7 @@ namespace Reload
         public override void Pickup(PlayerController player)
         {
             player.PostProcessProjectile += this.DoTheActions;
+            player.PostProcessBeam += this.onFiredBeam;
             base.Pickup(player);
         }
 
@@ -58,14 +59,30 @@ namespace Reload
         public override DebrisObject Drop(PlayerController player)
         {
             player.PostProcessProjectile -= this.DoTheActions;
+            Owner.PostProcessBeam -= this.onFiredBeam;
             return base.Drop(player);
         }
 
+        private void onFiredBeam(BeamController obj)
+        {
+            if (obj && obj.projectile)
+            {
+                obj.projectile.OnHitEnemy += this.HandleBeamCode;
+            }
+        }
 
+        private void HandleBeamCode(Projectile arg1, SpeculativeRigidbody arg2, bool arg3)
+        {
+            if (UnityEngine.Random.Range(1, 9) == 1)
+            {
+                arg2.aiActor.ApplyEffect(StaticStatusEffects.StandardPartyEffect);
+            }
+        }
         public override void OnDestroy()
         {
             if (Owner)
             {
+                Owner.PostProcessBeam -= this.onFiredBeam;
                 Owner.PostProcessProjectile -= this.DoTheActions;
             }
             base.OnDestroy();

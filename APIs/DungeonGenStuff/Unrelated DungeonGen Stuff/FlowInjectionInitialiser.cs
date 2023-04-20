@@ -33,7 +33,7 @@ namespace Reload
 			AssetBundle shared_auto_001 = ResourceManager.LoadAssetBundle("shared_auto_001");
 
 			GameObject iconPrefab =(shared_auto_001.LoadAsset("assets/data/prefabs/room icons/minimap_boss_icon.prefab") as GameObject);
-			BulletBishopRoomPrefab = BuildFromResource("Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/BishopRoom.room").room;
+			BulletBishopRoomPrefab = BuildFromResource("Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/BulletBishop.room").room;
 			BulletBishopRoomPrefab.associatedMinimapIcon = iconPrefab;
 			BulletBishopRoom = new ProceduralFlowModifierData()
 			{
@@ -48,8 +48,8 @@ namespace Reload
 				IsWarpWing = false,
 				RequiresMasteryToken = false,
 				chanceToLock = 0,
-				selectionWeight = 1000,
-				chanceToSpawn = 1,
+				selectionWeight = 1,
+				chanceToSpawn = 10000,
 				RequiredValidPlaceable = null,
 				prerequisites = new DungeonPrerequisite[] {
 					new DungeonPrerequisite

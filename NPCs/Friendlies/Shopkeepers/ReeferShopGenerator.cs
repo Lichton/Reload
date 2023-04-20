@@ -19,7 +19,7 @@ namespace Reload
     public static class ReeferShopGenerator
     {
         public static GameObject SetUpShop(string name, string prefix, List<string> idleSpritePaths, int idleFps, List<string> talkSpritePaths, int talkFps, GenericLootTable lootTable, CustomShopItemController.ShopCurrencyType currency, string runBasedMultilineGenericStringKey,
-          string runBasedMultilineStopperStringKey, string purchaseItemStringKey, string purchaseItemFailedStringKey, string introStringKey, string attackedStringKey, string stolenFromStringKey, Vector3 talkPointOffset, Vector3 npcPosition, VoiceBoxes voiceBox = VoiceBoxes.OLD_MAN, Vector3[] itemPositions = null, float costModifier = 1, bool giveStatsOnPurchase = false,
+          string runBasedMultilineStopperStringKey, string purchaseItemStringKey, string purchaseItemFailedStringKey, string introStringKey, string attackedStringKey, string stolenFromStringKey, string restockStringKey, Vector3 talkPointOffset, Vector3 npcPosition, VoiceBoxes voiceBox = VoiceBoxes.OLD_MAN, Vector3[] itemPositions = null, float costModifier = 1, bool giveStatsOnPurchase = false,
           StatModifier[] statsToGiveOnPurchase = null, Func<CustomShopController, PlayerController, int, bool> CustomCanBuy = null, Func<CustomShopController, PlayerController, int, int> CustomRemoveCurrency = null, Func<CustomShopController, CustomShopItemController, PickupObject, int> CustomPrice = null,
           Func<PlayerController, PickupObject, int, bool> OnPurchase = null, Func<PlayerController, PickupObject, int, bool> OnSteal = null, string currencyIconPath = "", string currencyName = "", bool canBeRobbed = true, bool hasCarpet = false, string carpetSpritePath = "",
           Vector2? CarpetOffset = null, bool hasMinimapIcon = false, string minimapIconSpritePath = "", bool addToMainNpcPool = false, float percentChanceForMainPool = 0.1f, DungeonPrerequisite[] prerequisites = null, float fortunesFavorRadius = 2,
@@ -184,6 +184,10 @@ namespace Reload
 
                 (fsmStringParams.GetValue(iHaveNoFuckingClueWhatThisIs.FsmStates[12].ActionData) as List<FsmString>)[0].Value = "#COOP_REBUKE";
 
+                
+
+
+
                 /*
                 foreach (FsmString fuck in fsmStringParams.GetValue(iHaveNoFuckingClueWhatThisIs.FsmStates[9].ActionData) as List<FsmString>)
                 {
@@ -301,6 +305,7 @@ namespace Reload
                 shopObj.FlagToSetOnEncounter = GungeonFlags.NONE;
                 shopObj.giveStatsOnPurchase = giveStatsOnPurchase;
                 shopObj.statsToGive = statsToGiveOnPurchase;
+                
 
                 //shopObj.
 
@@ -323,6 +328,7 @@ namespace Reload
 
                 npcObj.transform.parent = shopObj.gameObject.transform;
                 npcObj.transform.position = npcPosition;//new Vector3(1.9375f, 3.4375f, 5.9375f) + npcPositionOffset;
+                shopObj.shopNpc = npcObj;
                 RMShop(shopObj, npcObj);
 
 
@@ -379,6 +385,7 @@ namespace Reload
             carpetObj.transform.parent = shopObj.transform;
             var restock = carpetObj.AddComponent<RestockMachine>();
             restock.Start();
+            
             integer++;
         }
 

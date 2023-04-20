@@ -38,6 +38,7 @@ namespace Reload
 
         //Custom VFX
         public static GameObject IncensePoof;
+        public static GameObject EnemyDropPath;
         public static void Init()
         {
             //Last Bullet Standing VFX

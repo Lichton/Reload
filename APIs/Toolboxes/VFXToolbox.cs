@@ -40,8 +40,31 @@ namespace Reload
                       "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/incense_teleport_poof_007",
                        "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/incense_teleport_poof_008"
             };
-            EasyVFXDatabase.IncensePoof = CreateVFX("IncensePoof", IncensePath, 14, new IntVector2(112, 84), tk2dBaseSprite.Anchor.MiddleCenter, false, 0);
-            laserSightPrefab = LoadHelper.LoadAssetFromAnywhere("assets/resourcesbundle/global vfx/vfx_lasersight.prefab") as GameObject;
+            EasyVFXDatabase.IncensePoof = CreateVFX("IncensePoof", IncensePath, 14, new IntVector2(112, 84), tk2dBaseSprite.Anchor.MiddleCenter, true, 2);
+            List<string> EnemyDropPath = new List<string>()
+            {
+                "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/bulletbro_shades_intro_001",
+                  "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/bulletbro_shades_intro_002",
+                   "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/bulletbro_shades_intro_003",
+                    "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/bulletbro_shades_intro_004",
+                     "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/bulletbro_shades_intro_005",
+                      "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/bulletbro_shades_intro_006",
+                       "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/bulletbro_shades_intro_007",
+                        "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/bulletbro_shades_intro_008",
+                         "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/bulletbro_shades_intro_009",
+                  "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/bulletbro_shades_intro_010",
+                   "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/bulletbro_shades_intro_011",
+                    "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/bulletbro_shades_intro_012",
+                     "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/bulletbro_shades_intro_013",
+                      "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/bulletbro_shades_intro_014",
+                       "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/bulletbro_shades_intro_015",
+                        "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/bulletbro_shades_intro_016",
+                        "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/bulletbro_shades_intro_017",
+                       "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/bulletbro_shades_intro_018",
+                        "Reload/Resources/NPCs/Hostile/Bosses/BulletBishop/Teleport/bulletbro_shades_intro_019",
+            };
+            EasyVFXDatabase.EnemyDropPath = CreateVFX("EnemyDropPath", EnemyDropPath, 14, new IntVector2(39, 40), tk2dBaseSprite.Anchor.MiddleCenter, false, 0);
+            laserSightPrefab = LoadHelper.LoadAssetFromAnywhere<GameObject>("assets/resourcesbundle/global vfx/vfx_lasersight.prefab");
 
             List<string> FriendVFXPaths = new List<string>()
             {

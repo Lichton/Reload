@@ -34,6 +34,7 @@ namespace Reload
 
             item.quality = PickupObject.ItemQuality.B;
             item.SetTag("bullet_modifier");
+            item.AddToSubShop(ItemBuilder.ShopType.Trorc, 1);
             item.PlaceItemInAmmonomiconAfterItemById(524);
         }
 
@@ -44,6 +45,7 @@ namespace Reload
         }
 
         public int i = 0;
+        //Study beam direct code from turret dudes
 
         private void DoTheActions(Projectile arg1, float arg2)
         {
@@ -53,10 +55,12 @@ namespace Reload
         }
         private void SelectTarget(Projectile Projectile, SpeculativeRigidbody target, bool unneeded)
         {
-           
-            if ((target.healthHaver != CurrentTarget) && target.healthHaver.IsVulnerable == true && target.healthHaver.CanCurrentlyBeKilled)
+            if (target.healthHaver)
             {
-                CurrentTarget = target.healthHaver;
+                if ((target.healthHaver != CurrentTarget) && target.healthHaver.IsVulnerable == true && target.healthHaver.CanCurrentlyBeKilled)
+                {
+                    CurrentTarget = target.healthHaver;
+                }
             }
         }
         public IEnumerator DelayRedirectBullet(Projectile proj)
@@ -92,6 +96,6 @@ namespace Reload
             base.OnDestroy();
         }
 
-        public static HealthHaver CurrentTarget = null;
+        public HealthHaver CurrentTarget = null;
     }
 }

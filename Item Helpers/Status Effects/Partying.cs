@@ -14,7 +14,7 @@ namespace Reload
         public static void Init()
         {
             PartyOverheadVFX = VFXToolbox.CreateOverheadVFX(PartyVFXPaths, "PartyOverhead", 10, 0.125f);
-    
+
             ///every +0.0625f offsets by one pixel in according axis
             GameActorPartyEffect StandParty = StatusEffectHelper.GeneratePartyEffect(5);
             StaticStatusEffects.StandardPartyEffect = StandParty;
@@ -41,20 +41,28 @@ namespace Reload
 
         public override void OnEffectRemoved(GameActor actor, RuntimeGameActorEffectData effectData)
         {
-            
+
             AkSoundEngine.PostEvent("Play_OBJ_prize_won_01", actor.gameObject);
             ItemToolbox.DoConfetti(actor.sprite.WorldBottomLeft);
             UnityEngine.Object.Instantiate<GameObject>(EasyVFXDatabase.ItemPoofVFX, actor.sprite.WorldCenter, Quaternion.identity);
-            if (actor.healthHaver.IsBoss)
+            if (actor.aiActor)
             {
-                actor.healthHaver.ApplyDamage(100, Vector2.zero, "Partying");
+                if (actor.healthHaver.IsBoss || actor.healthHaver.IsSubboss ||  actor.aiActor.IsMimicEnemy)
+                {
+                    actor.healthHaver.ApplyDamage(100, Vector2.zero, "Partying");
+                }
+                else if (actor.aiActor.CompanionOwner)
+                {
+                    return;
+                }
+                else
+                {
+                    actor.aiActor.EraseFromExistenceWithRewards();
+                }
             }
-            else
-            {
-                actor.aiActor.EraseFromExistenceWithRewards();
-            }
+
+
             base.OnEffectRemoved(actor, effectData);
         }
-
     }
 }

@@ -30,6 +30,7 @@ namespace Reload
             ItemBuilder.SetupItem(item, shortDesc, longDesc, "rld");
             ItemBuilder.SetCooldownType(item, ItemBuilder.CooldownType.Damage, 375f);
             item.quality = PickupObject.ItemQuality.B;
+            item.PlaceItemInAmmonomiconAfterItemById(403);
         }
      
         public override void DoEffect(PlayerController user)
@@ -38,8 +39,13 @@ namespace Reload
             {
 
                 System.Random random = new System.Random();
+                int max = 3;
+                if (LastOwner.PlayerHasActiveSynergy("AIActor.Spawn();"))
+                    {
+                    max = 5;
+                    }
 
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < max; i++)
                 {
                     int index = random.Next(enemyList.Count);
                     IntVector2? bestRewardLocation = LastOwner.CurrentRoom.GetRandomVisibleClearSpot(2, 2);
